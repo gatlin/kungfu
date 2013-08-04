@@ -1,0 +1,19 @@
+###
+# This file is a YAML document. You have been warned.
+
+host: "### YOUR SERVER ###"
+user: "### YOUR USERNAME ###"
+dir:  "### REMOTE DIRECTORY ###"
+
+###
+# Possible other parameters:
+# ---
+#
+# password   (for user)
+# key_path
+# passphrase (for key file)
+# port
+# ssh_cmd    (name or full path to ssh binary)
+# scp_cmd
+# rsync_cmd
+# timeout
