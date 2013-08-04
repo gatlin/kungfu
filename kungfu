@@ -1,57 +1,5 @@
 #!/usr/bin/env perl
 
-=head1 NAME
-
-kungfu
-
-=head1 SYNOPSIS
-
-    # in .kungfurc
-    host: "myserver.tld"
-    user: "gcj"
-    dir:  "/home/gcj/Downloads/"
-    port: 2222
-
-    # in terminal
-    $~ kungfu
-    0 ) photo1.jpg
-    1 ) taxes.ods
-    2 ) archlinux-2013.08.01-dual.iso
-
-    Enter the file you wish to download: 2
-
-    Executing: program ssh host myserver.tld, user root, command scp -v -r -f    -- /home/gcj/Downloads/archlinux-2013.08.01-dual.iso
-    OpenSSH_5.6p1, OpenSSL 0.9.8x 10 May 2012
-    debug1: Reading configuration data /etc/ssh_config
-    debug1: Applying options for *
-    debug1: Applying options for *
-    debug1: mux_client_request_session: master session id: 2
-    Sending file modes: C0644 551550976 archlinux-2013.08.01-dual.iso
-    Sink: C0644 551550976 archlinux-2013.08.01-dual.iso
-    debug1: mux_client_request_session: master session id: 2
-    Download completed successfully
-
-=head1 DESCRIPTION
-
-C<kungfu> is a really simple wrapper around SSH for me to grab remote files
-from a server. The author's original use case was quickly grabbing files
-downloaded via BitTorrent from a seedbox.
-
-=head1 DEPENDENCIES
-
-=over
-
-=item C<Net::OpenSSH>
-=item C<File::HomeDir>
-=item C<YAML>
-=item C<Scalar::Util>
-
-=head1 AUTHOR
-
-Gatlin Johnson L<http://niltag.net> L<gatlin@niltag.net|mailto:gatlin@niltag.net>
-
-=cut
-
 use v5.16;
 use Net::OpenSSH;
 use File::HomeDir;
