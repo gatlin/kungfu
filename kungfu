@@ -18,6 +18,7 @@ foreach (qw/host user dir/) {
 
 my $host = $config->{host};
 my $dir  = $config->{dir};
+$dir = $dir.'/' unless substr($dir,-1,1) eq '/';
 delete $config->{$_} foreach qw/host dir/;
 
 my $ssh = Net::OpenSSH->new($host,%{$config});
@@ -25,26 +26,30 @@ my $ssh = Net::OpenSSH->new($host,%{$config});
 $ssh->error and
     die "Couldn't establish SSH connection: " . $ssh->error;
 
-my @files = $ssh->capture(q[ls /home/kungfu/Downloads]);
-map { chomp } @files;
-say "$_ ) $files[$_]" foreach (0..$#files);
+my @infos = $ssh->capture(qq[cd $dir && ls $dir | xargs -I %% -n1 du -h %%]);
+@infos = map {
+    chomp($_);
+    my ($h,$t) = split(/\s+/, $_, 2);
+    { file => $t, size => $h }
+} @infos;
+say "$_ ) $infos[$_]->{size}\t$infos[$_]->{file}" foreach (1..$#infos);
 say;
-print q[Enter the file you wish to download: ];
+print q[Enter the file you wish to download (or q to quit): ];
 
 my $which = <STDIN>;
-exit(1) unless $which ne '';
 chomp $which;
+exit(1) if $which eq '' or $which eq 'q';
 
 warn "Not a number: $which$!" and exit(1)
     unless looks_like_number($which);
 warn "Out of range: $which$!" and exit(1)
-    unless $which > 0 and $which < scalar(@files);
+    unless $which > 0 and $which < scalar(@infos);
 
 my $downloaded = $ssh->scp_get({
         recursive => 1,
         verbose   => 1,
     },
-    qq[/home/kungfu/Downloads/$files[0+$which]]);
+    qq[/home/kungfu/Downloads/$infos[0+$which]->{file}]);
 
 say "Download completed successfully" if $downloaded;
 
